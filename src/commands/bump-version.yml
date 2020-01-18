@@ -20,6 +20,6 @@ steps:
         patch='<< parameters.patch >>'
         branch_regex="dev-.*"
         if [[ "${CIRCLE_BRANCH}" =~ $branch_regex ]]; then
-           patch='-- --prerelease SNAPSHOT'
+           patch=' --prerelease SNAPSHOT'
         fi
-        npm run bump-version << parameters.patch >>
+        yarn version << parameters.patch >>

@@ -12,8 +12,8 @@ parameters:
     type: string
   stage:
     type: enum
-    enum: [DEV, STG, PRD]
-    default: DEV
+    enum: [dev, stg, prd]
+    default: dev
 steps:
   - aws-cli/setup:
       aws-access-key-id: << parameters.aws-access-key-id >>

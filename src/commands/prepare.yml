@@ -4,24 +4,40 @@ description: >
 parameters:
   stage:
     type: enum
-    enum: [DEV, STG, PRD]
-    default: DEV
+    enum: [dev, stg, prd]
+    default: dev
   package-path:
     type: string
     default: '.'
+  aws-access-key-id:
+    type: string
+  aws-secret-access-key:
+    type: string
+  aws-region:
+    type: string
 steps:
   - attach_workspace:
       at: .
   - create-env:
       stage: << parameters.stage >>
+  - run:
+      name: cat env
+      command: echo cat .env
   - restore_cache:
       keys:
-        - yarn-packages-{{ checksum "<< parameters.package-path >>/yarn.lock" }}-{{ checksum "./server/yarn.lock" }}
+        - yarn-packages-{{ checksum "<< parameters.package-path >>/yarn.lock" }}-
   - run:
       name: install
-      command: "[ -d '~/.cache/yarn' ] || cd << parameters.package-path >> && yarn install --frozen-lockfile"
+      command: "[ -d '/home/circleci/.cache/yarn' ] || cd << parameters.package-path >> && yarn install --frozen-lockfile"
   - save_cache:
       name: save cache
       key: yarn-packages-{{ checksum "<< parameters.package-path >>/yarn.lock" }}
       paths:
         - ~/.cache/yarn
+  - aws-cli/setup:
+      aws-access-key-id: << parameters.aws-access-key-id >>
+      aws-secret-access-key: << parameters.aws-secret-access-key >>
+      aws-region: << parameters.aws-region >>
+  - run:
+      name: add serverless
+      command: sudo npm i -g serverless

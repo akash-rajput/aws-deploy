@@ -4,8 +4,8 @@ description: >
 parameters:
   stage:
     type: enum
-    enum: [DEV, STG, PRD]
-    default: DEV
+    enum: [dev, stg, prd]
+    default: dev
 
 steps:
   - run:

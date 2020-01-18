@@ -10,35 +10,26 @@ parameters:
   approval-slack-notification:
     type: boolean
     default: true
-  aws-access-key-id:
-    type: string
-  aws-secret-access-key:
-    type: string
-  aws-region:
-    type: string
   stage:
     type: enum
-    enum: [DEV, STG, PRD]
-    default: DEV
+    enum: [dev, stg, prd]
+    default: dev
   next-stage:
     type: string
-    default: 'DEV'
+    default: 'dev'
   package-path:
     type: string
     default: '.'
 
 steps:
-  - pull-current-code:
-      branch: $CIRCLE_BRANCH
   - bump-version:
       patch: << parameters.patch-version >>
-  - aws-cli/setup:
-      aws-access-key-id: << parameters.aws-access-key-id >>
-      aws-secret-access-key: << parameters.aws-secret-access-key >>
-      aws-region: << parameters.aws-region >>
+  - run:
+      name: build
+      command: cd << parameters.package-path >> && yarn build
   - run:
       name: Deploy to S3
-      command: echo "Y" | cd << parameters.package-path >> && serverless client deploy --region << parameters.bucket-region >> --verbose -s << parameters.stage >>
+      command: cd << parameters.package-path >> && echo "Y" | serverless client deploy --region << parameters.bucket-region >> --verbose -s << parameters.stage >>
   - push-and-notify:
       branch: $CIRCLE_BRANCH
       channel: $SLACK_CHANNEL

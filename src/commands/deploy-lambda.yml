@@ -5,19 +5,13 @@ parameters:
   approval-slack-notification:
     type: boolean
     default: true
-  aws-access-key-id:
-    type: string
-  aws-secret-access-key:
-    type: string
-  aws-region:
-    type: string
   patch-version:
     type: string
     default: ''
   stage:
     type: enum
-    enum: [DEV, STG, PRD]
-    default: DEV
+    enum: [dev, stg, prd]
+    default: dev
   next-stage:
     type: string
     default: ''
@@ -26,14 +20,8 @@ parameters:
     default: '.'
 
 steps:
-  - pull-current-code:
-      branch: $CIRCLE_BRANCH
   - bump-version:
       patch: << parameters.patch-version >>
-  - aws-cli/setup:
-      aws-access-key-id: << parameters.aws-access-key-id >>
-      aws-secret-access-key: << parameters.aws-secret-access-key >>
-      aws-region: << parameters.aws-region >>
   - run:
       name: Deploy to AWS
       command: cd << parameters.package-path >> && NODE_ENV=<< parameters.stage >> serverless deploy  -s << parameters.stage >> --verbose --aws-s3-accelerate --force
