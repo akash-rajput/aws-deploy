@@ -1,0 +1,20 @@
+description: >
+  Authenticate with github and add username and email
+
+parameters:
+  username:
+    type: string
+  email:
+    type: string
+  key-fingerprint:
+    type: string
+
+steps:
+  - run:
+      name: Add github credentials
+      command: |
+        git config --global user.name << parameters.username >>
+        git config --global user.email << parameters.email >>
+  - add_ssh_keys:
+      fingerprints:
+        - << parameters.key-fingerprint >>

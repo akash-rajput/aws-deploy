@@ -1,0 +1,8 @@
+description: >
+  Add REACT_APP_VERSION to env 
+
+steps:
+  - run:
+      name: Add REACT_APP_VERSION to env 
+      command: echo REACT_APP_VERSION=$(node -pe "require('./package.json').version") >> .env
+  

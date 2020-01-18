@@ -1,0 +1,7 @@
+description: >
+  Run all the tests inside a repo
+
+steps:
+  - run:
+      name: Test the repo 
+      command: npm run test

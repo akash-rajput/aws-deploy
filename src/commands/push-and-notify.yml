@@ -1,0 +1,16 @@
+description: >
+  Push and notify user
+
+parameters:
+  branch:
+    type: string
+  webhook:
+    type: string
+  channel:
+    type: string
+steps:
+  - push-to-git:
+          branch: << parameters.branch >>
+  - success-slack-notification:
+          channel: << parameters.channel >>
+          webhook: << parameters.webhook >>

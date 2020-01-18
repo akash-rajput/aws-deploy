@@ -1,0 +1,27 @@
+description: >
+  Prepare stuff
+
+parameters:
+  stage:
+    type: enum
+    enum: [DEV, STG, PRD]
+    default: DEV
+  package-path:
+    type: string
+    default: '.'
+steps:
+  - attach_workspace:
+      at: .
+  - create-env:
+      stage: << parameters.stage >>
+  - restore_cache:
+      keys:
+        - yarn-packages-{{ checksum "<< parameters.package-path >>/yarn.lock" }}-{{ checksum "./server/yarn.lock" }}
+  - run:
+      name: install
+      command: "[ -d '~/.cache/yarn' ] || cd << parameters.package-path >> && yarn install --frozen-lockfile"
+  - save_cache:
+      name: save cache
+      key: yarn-packages-{{ checksum "<< parameters.package-path >>/yarn.lock" }}
+      paths:
+        - ~/.cache/yarn

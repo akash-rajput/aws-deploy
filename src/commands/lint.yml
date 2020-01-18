@@ -1,0 +1,7 @@
+description: >
+  Test the linting issues in a repo 
+
+steps:
+  - run:
+      name: Run fastlint
+      command: npm run lint

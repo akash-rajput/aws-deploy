@@ -1,0 +1,17 @@
+description: >
+  Create env File for frontend and backend from env variable
+
+parameters:
+  stage:
+    type: enum
+    enum: [DEV, STG, PRD]
+    default: DEV
+
+steps:
+  - run:
+      name: Create stage .env file
+      command: |
+        printenv >> .system_env
+        sed '/^<< parameters.stage >>/!d' .system_env >> .stage_env
+        sed 's/<< parameters.stage >>_//' .stage_env >> .unfiltered.env
+        sed '/^AWS_/d' .unfiltered.env >> .env

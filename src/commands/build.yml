@@ -1,0 +1,17 @@
+description: >
+  Compile and build the node application
+
+parameters:
+  run-tests:
+    type: boolean
+    default: true
+
+steps:
+  - when:
+      condition: << parameters.run-tests >>
+      steps:
+        - lint
+        - test
+  - run:
+      name: Build the repo
+      command: npm run build

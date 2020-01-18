@@ -1,0 +1,26 @@
+description: >
+  Authenticate and deploy the frontend to s3
+
+parameters:
+  bucket-region:
+    type: string
+  aws-access-key-id:
+    type: string
+  aws-secret-access-key:
+    type: string
+  aws-region:
+    type: string
+  stage:
+    type: enum
+    enum: [DEV, STG, PRD]
+    default: DEV
+steps:
+  - aws-cli/setup:
+      aws-access-key-id: << parameters.aws-access-key-id >>
+      aws-secret-access-key: << parameters.aws-secret-access-key >>
+      aws-region: << parameters.aws-region >>
+  - build:
+      run-tests: false
+  - run:
+      name: Deploy to S3
+      command: echo "Y" | serverless client deploy --region << parameters.bucket-region >> --verbose

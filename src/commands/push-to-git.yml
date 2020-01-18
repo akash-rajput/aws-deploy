@@ -1,0 +1,11 @@
+description: >
+  Push commit to github
+
+parameters:
+  branch:
+    type: string
+
+steps:
+  - run:
+      name: Push to github
+      command: git push --follow-tags origin << parameters.branch >> 

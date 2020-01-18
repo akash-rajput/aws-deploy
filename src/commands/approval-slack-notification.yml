@@ -1,0 +1,19 @@
+description: >
+  Send a slack notification for pending approval
+
+parameters:
+  message:
+    type: string
+  webhook:
+    type: string
+  channel:
+    type: string
+  approve-ci-url:
+    type: string
+    default: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_ID
+steps:
+  - slack/notify:
+          channel: << parameters.channel >>
+          color: '#ff9d00'
+          message: '<< parameters.message >> << parameters.approve-ci-url >>'
+          webhook: << parameters.webhook >>

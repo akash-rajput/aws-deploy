@@ -1,0 +1,17 @@
+description: >
+  Send a slack notification for success
+
+parameters:
+  message:
+    type: string
+    default: "package has been deployed version:"
+  webhook:
+    type: string
+  channel:
+    type: string
+steps:
+  - slack/notify:
+          channel: << parameters.channel >>
+          color: '#30eb30'
+          message: $CIRCLE_PROJECT_REPONAME << parameters.message >> $(node -pe "require('./package.json').version")
+          webhook: << parameters.webhook >>

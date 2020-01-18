@@ -1,0 +1,25 @@
+description: >
+  Upgrade the version according to given patch version
+
+parameters:
+  patch:
+    type: string
+    default: ''
+
+steps:
+  - authenticate-with-github:
+      username: $GITHUB_USERNAME
+      email: $GITHUB_EMAIL
+      key-fingerprint: $GITHUB_KEY_FINGERPRINT
+  - run:
+      name: Run Github Push Check
+      command: git push origin $CIRCLE_BRANCH
+  - run:
+      name: Bump package version
+      command: |
+        patch='<< parameters.patch >>'
+        branch_regex="dev-.*"
+        if [[ "${CIRCLE_BRANCH}" =~ $branch_regex ]]; then
+           patch='-- --prerelease SNAPSHOT'
+        fi
+        npm run bump-version << parameters.patch >>

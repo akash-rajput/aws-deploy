@@ -1,0 +1,52 @@
+description: >
+  Deploy s3 bucket on frontend
+
+parameters:
+  bucket-region:
+    type: string
+  patch-version:
+    type: string
+    default: ''
+  approval-slack-notification:
+    type: boolean
+    default: true
+  aws-access-key-id:
+    type: string
+  aws-secret-access-key:
+    type: string
+  aws-region:
+    type: string
+  stage:
+    type: enum
+    enum: [DEV, STG, PRD]
+    default: DEV
+  next-stage:
+    type: string
+    default: 'DEV'
+  package-path:
+    type: string
+    default: '.'
+
+steps:
+  - pull-current-code:
+      branch: $CIRCLE_BRANCH
+  - bump-version:
+      patch: << parameters.patch-version >>
+  - aws-cli/setup:
+      aws-access-key-id: << parameters.aws-access-key-id >>
+      aws-secret-access-key: << parameters.aws-secret-access-key >>
+      aws-region: << parameters.aws-region >>
+  - run:
+      name: Deploy to S3
+      command: echo "Y" | cd << parameters.package-path >> && serverless client deploy --region << parameters.bucket-region >> --verbose -s << parameters.stage >>
+  - push-and-notify:
+      branch: $CIRCLE_BRANCH
+      channel: $SLACK_CHANNEL
+      webhook: $SLACK_WEBHOOK
+  - when:
+      condition: << parameters.approval-slack-notification >>
+      steps:
+        - approval-slack-notification:
+            channel: $SLACK_CHANNEL
+            webhook: $SLACK_WEBHOOK
+            message: << parameters.next-stage >> $SLACK_APPROVAL_MESSAGE

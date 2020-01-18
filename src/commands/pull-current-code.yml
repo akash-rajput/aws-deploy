@@ -1,0 +1,10 @@
+description: >
+  Checkout current updated code from github 
+
+parameters:
+  branch:
+    type: string
+steps:
+  - run:
+      name: checkout current branch
+      command: git pull origin << parameters.branch >>
