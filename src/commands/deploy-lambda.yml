@@ -24,7 +24,7 @@ steps:
       patch: << parameters.patch-version >>
   - run:
       name: Deploy to AWS
-      command: cd << parameters.package-path >> && NODE_ENV=<< parameters.stage >> serverless deploy  -s << parameters.stage >> --verbose --aws-s3-accelerate --force
+      command: cd << parameters.package-path >> && serverless deploy  -s << parameters.stage >> --verbose --aws-s3-accelerate --force
   - push-and-notify:
       branch: $CIRCLE_BRANCH
       channel: $SLACK_CHANNEL
@@ -35,4 +35,4 @@ steps:
         - approval-slack-notification:
             channel: $SLACK_CHANNEL
             webhook: $SLACK_WEBHOOK
-            message: << parameters.next-stage >> $SLACK_APPROVAL_MESSAGE
+            message: << parameters.next-stage >> $SLACK_APPROVAL_MESSAGE BRANCH - $CIRCLE_BRANCH \n git log --format=%B -n 1 $CIRCLE_SHA1
